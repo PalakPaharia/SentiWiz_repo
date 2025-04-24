@@ -1,0 +1,115 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+SentiWiz: Technology Stack Document
+
+1. Introduction
+
+This document outlines the complete technology stack selected for the development of SentiWiz, a sentiment analysis platform for businesses. The stack is chosen to balance scalability, performance, modern development practices, maintainability, and quick prototyping for MVP while supporting future expansions.
+
+2. Frontend
+
+Framework & Core Tools
+
+React 18 with TypeScript: Enables building fast and type-safe component-based UI.
+
+Vite: A lightning-fast build tool for React apps.
+
+Tailwind CSS: Utility-first CSS framework to build responsive and maintainable UIs.
+
+shadcn/ui + Radix UI: Provides accessible, headless UI components styled with Tailwind.
+
+React Router v6: For client-side routing and navigation.
+
+State & Form Management
+
+React Query (TanStack Query): Manages server state and caching.
+
+React Hook Form + Zod: Lightweight form management and schema validation.
+
+Charts & Visualization
+
+Recharts: Declarative charting library for sentiment trends and emotion visuals.
+
+date-fns: For lightweight and modular date formatting.
+
+Themes & Accessibility
+
+next-themes: Enables dark/light mode support.
+
+3. Backend
+
+Core Backend
+
+Node.js (with Express): RESTful backend for handling logic, scheduling, and API processing.
+
+Python (FastAPI): Used for ML/NLP tasks and integration with LLM models.
+
+ML/NLP Stack
+
+Transformers (HuggingFace): For sentiment and emotion detection models.
+
+spaCy / NLTK: Lightweight NLP preprocessing.
+
+OpenAI API (Optional): For contextual tagging and summarization.
+
+Scheduling & Reports
+
+Node Cron / BullMQ: For scheduled tasks (like daily/weekly reports).
+
+Puppeteer / Playwright: For generating PDF reports.
+
+Custom CSV Formatter: For CSV report creation.
+
+4. Database & Authentication
+
+Database
+
+Supabase (PostgreSQL): Cloud-hosted, scalable Postgres with real-time capabilities.
+
+Supabase RLS (Row-Level Security): Ensures data-level access control.
+
+Authentication
+
+Supabase Auth (Email Magic Link): Passwordless, secure login with enforced verification.
+
+Schema Highlights
+
+Users, Sessions, Comments, Reports, Platforms
+
+All entities linked via user_id
+
+5. Hosting & DevOps
+
+(Deployment is not focused currently but future stack outlined below)
+
+Vercel: For frontend hosting with CI/CD.
+
+Railway / Render / Supabase Edge Functions: For backend server deployment.
+
+Cloudflare: CDN and security layer.
+
+GitHub Actions: For automated testing and deployment.
+
+6. Security
+
+Supabase RLS Policies: Restrict access per user.
+
+Environment variables via .env: All secrets and tokens managed securely.
+
+JWT-based Token Authentication: For API authorization.
+
+7. Tooling & Dev Experience
+
+ESLint + Prettier: Linting and consistent formatting.
+
+TypeScript: Type safety across frontend and backend.
+
+Git (Conventional Commits): For consistent version history.
+
+Postman: For API testing.
+
+
+Figma: UI/UX prototyping.

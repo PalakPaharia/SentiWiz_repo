@@ -1,0 +1,71 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+SentiWiz App Flow Document
+1. Introduction
+SentiWiz is an AI-powered sentiment analysis platform designed for businesses to extract insights from customer feedback across various digital platforms. This document outlines the detailed user flow, UI structure, key modules, and functionality of the MVP release of SentiWiz. The primary user is a business admin who can integrate platforms, view analysis dashboards, generate reports, interact with an AI agent, and manage settings.
+2. Sidebar Navigation
+ 2.1 Navigation Items
+    Dashboard: Overview of all sentiment metrics and trends
+    Platforms & Reports: Individual platform tiles with Sync/Report access
+    SentiWiz Agent: AI-powered assistant for asking custom queries
+    Settings: Platform settings and integrations
+    Support: Help and documentation access
+3. User Authentication Flow
+ 3.1 Sign-Up / Login
+    Email-based authentication using Supabase
+    Email verification mandatory before access
+ 3.2 Access Control
+    Only verified users (business admins) can log in and access app functionality
+4. Dashboard Module
+ 4.1 Global Metrics Displayed
+    Total Comments
+    Sentiment Trend (Line Chart)
+    Word Cloud
+    Tag-Based Sentiments
+    Trend Alerts (e.g., sudden spikes in negative sentiment)
+ 4.2 Date Filter
+    Global date filter applies to all components on the dashboard
+5. Platforms & Reports Module
+ 5.1 Platform Tiles (Instagram Enabled for MVP)
+   Instagram (Active)
+   Shows status, last sync time, and quick access to sentiment overview
+   Report button to view full analysis dashboard with charts
+   Other Platforms (Google Reviews, YouTube, LinkedIn, Facebook, Twitter, Website Reviews)
+   Visible but disabled for MVP
+ 5.2 Per Tile Actions
+   Sync Now: Triggers data refresh and sentiment analysis
+   Report Button: Redirects to a new page with visual sentiment reports, not for downloads
+6. SentiWiz Agent
+6.1 Interface
+OpenAI-powered chatbot embedded in the app
+Accessible via sidebar menu item "SentiWiz Agent"
+Tabs: Chat | Settings
+6.2 Functionality
+Users can type custom queries to extract sentiment trends, keyword analysis, platform comparison, etc.
+6.3 Sample Questions
+"What are the most common complaints about our delivery service?"
+"Compare sentiment across different platforms for our customer service"
+"Identify top keywords in negative reviews"
+"Generate a weekly summary of customer feedback highlights"
+7. Settings
+Integration keys and API tokens management (for future platforms)
+Profile and preferences (basic)
+8. Support Module
+FAQ and documentation
+Contact/help ticket
+9. States and System Feedback
+9.1 States
+Loading: Shown while data is being fetched or sync is in progress
+Error: Any issues during platform sync, API limits, etc.
+Success: Confirmation messages on sync and report generation
+10. Future Enhancements (Post-MVP)
+Add multi-lingual analysis system
+Integration of other platforms
+Scheduled report downloads (PDF/CSV)
+Advanced alerts and notification system
+OAuth login (Google, Microsoft) 
+
+

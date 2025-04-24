@@ -1,0 +1,147 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Frontend Guidelines – SentiWiz Insights
+Introduction
+This document outlines the frontend architecture, best practices, coding standards, and implementation strategies for SentiWiz Insights, an AI-powered sentiment analysis platform. It is designed to ensure consistency, maintainability, and scalability as the product evolves.
+
+SentiWiz aims to deliver real-time customer sentiment analytics by integrating with multiple data sources like Instagram, Google Reviews, YouTube, and more. These guidelines help ensure that our UI is fast, responsive, accessible, and visually aligned with our brand identity, while also supporting a clean developer experience.
+
+These standards will be followed by all frontend developers and designers contributing to the project. Whether building new components, integrating APIs, or debugging, this guide will serve as the foundational reference for frontend development on SentiWiz.
+
+1. Framework & Core Libraries
+Primary Stack:
+Framework: React 18 with TypeScript
+Build Tool: Vite
+Styling: Tailwind CSS with shadcn/ui components
+State Management: React Query (TanStack Query)
+Form Handling: React Hook Form with Zod validation
+Routing: React Router v6
+Authentication: Supabase Auth
+UI Components: Radix UI primitives with shadcn/ui
+Charts: Recharts
+Date Handling: date-fns
+
+2. Project Structure & File Organization
+Sample Directory Structure:
+src/
+  assets/           # Images, SVGs, and logos
+  components/       # Reusable UI components
+  pages/            # Route-based pages
+  hooks/            # Custom React hooks
+  lib/              # Utilities and helpers
+  services/         # API logic and wrappers
+  constants/        # App-wide constants
+  layouts/          # Shared layouts and wrappers
+  routes/           # Route definitions and guards
+  types/            # Type definitions and interfaces
+Naming Conventions:
+Components: PascalCase (e.g., DashboardCard.tsx)
+Hooks: camelCase with use prefix (e.g., useAuth.ts)
+Utilities: camelCase (e.g., formatDate.ts)
+Constants: UPPER_SNAKE_CASE
+Files: .tsx for components, .ts for utilities/types
+
+3. Styling Standards
+Tailwind CSS Configuration:
+Custom color palette based on sentiment:
+Positive: #22c55e
+Neutral: #64748b
+Negative: #ef4444
+Custom animations for smooth transitions
+Responsive design using Tailwind defaults
+Dark mode: class strategy with manual toggling or compatible plugin
+Component Styling:
+Use Tailwind classes consistently
+Extend and theme shadcn/ui components as needed
+Use Tailwind spacing scale for consistent padding/margins
+Define global CSS variables for theme colors if needed
+
+4. Component Design
+Structure and Practices:
+Co-locate .tsx, styles, and tests within the component folder
+Use props interfaces for all components
+Implement loading, empty, and error states
+Use accessibility-friendly HTML and ARIA roles
+State Management:
+Use React Query for server state (with caching, invalidation)
+Local state with useState, useReducer
+Global UI state via Context API or Zustand (if needed)
+Encapsulate business logic in custom hooks
+
+5. Form Handling & Validation
+Implementation:
+React Hook Form for form state
+Zod for schema-based validation
+Use shadcn/ui for form components (Input, Select, DatePicker, etc.)
+Ensure all fields are accessible and keyboard navigable
+Show consistent error messages and validation states
+
+6. API Integration & Authentication
+API Calls:
+Use React Query hooks for all server communication
+Place logic inside /services and wrap with custom hooks
+Use error boundaries for error resilience
+Handle loading states with spinners/skeletons
+Authentication:
+Supabase Auth with email verification check (user.email_confirmed)
+Do not allow access to /dashboard unless verified
+Persist session securely, handle refresh tokens
+Implement protected route guards
+
+7. Performance Optimization
+Best Practices:
+Code splitting via React.lazy and Suspense
+Memoization with React.memo, useMemo, useCallback
+Use optimized image formats (WebP) and lazy loading
+Proper key usage in lists
+Use Vite’s prefetching for critical routes/components
+Loading & Errors:
+Use skeleton loaders for layout preservation
+Spinners for specific actions (submit, sync)
+Global and route-based error boundaries
+
+8. Code Quality & Tools
+Tooling:
+ESLint for linting
+Prettier for code formatting
+TypeScript for static typing
+Vite for fast builds and HMR
+Git Workflow:
+Use feature/, fix/, hotfix/ branches off main
+PR reviews before merging
+Use Conventional Commits
+Semantic versioning for releases
+
+9. Accessibility (a11y)
+Standards:
+Use semantic HTML tags (e.g., <main>, <button>, <nav>)
+ARIA labels and roles for non-native components
+Ensure full keyboard support
+Color contrast as per WCAG 2.1
+Use screen reader test tools (e.g., VoiceOver, NVDA)
+
+10. Testing Guidelines
+Setup:
+Unit/Component Testing: Jest + React Testing Library
+API Mocks: MSW (Mock Service Worker)
+End-to-End (optional): Cypress
+Organize tests alongside components/services
+Target 70–80% coverage for critical features
+
+11. Documentation
+Code Documentation:
+Use JSDoc for utility functions
+Add usage notes to component files
+Keep interfaces and types descriptive and reusable
+Component Documentation:
+Describe each prop with type and default
+Provide usage examples (in dev or via Storybook)
+Include accessibility notes
+Project Docs:
+Maintain an updated README.md
+Consider adding a /docs directory or using Storybook for UI showcase
+
+

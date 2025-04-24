@@ -1,0 +1,145 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+SentiWiz Backend Architecture & Flow Documentation
+
+Introduction
+This document outlines the detailed backend architecture and data flow for SentiWiz, an AI-powered customer sentiment analysis platform designed for businesses. SentiWiz ingests data from multiple platforms (starting with Instagram), analyzes customer sentiments using ML/NLP, and presents insights through a web dashboard. This documentation covers system responsibilities, API flows, data pipelines, user authentication, database design, and backend security policies. It is designed to support scalability, maintainability, and future integrations like Google Reviews, YouTube, LinkedIn, and more.
+
+1. System Overview
+1.1 Backend Stack
+Language: TypeScript (Node.js runtime)
+Framework: Fastify / Express.js
+Database: PostgreSQL via Supabase
+ORM: Supabase JS Client (Direct SQL or Supabase ORM)
+Authentication: Supabase Auth with Magic Link (Email Verification)
+Background Tasks: Supabase Edge Functions / CRON Functions
+APIs: REST APIs for platform integration and analysis
+Third-Party APIs: Instagram Graph API, (others in future)
+
+2. Application Flow (MVP)
+2.1 User Flow
+Landing Page
+Sign Up / Login Page
+User enters email
+Receives magic link for verification
+Email Verification Page
+Restricted access until verified
+Upon verification, redirect to dashboard
+Dashboard
+Displays: Total Comments, Sentiment Trends, Word Cloud, Tag Sentiments, Trend Alerts
+Allows filter by: Last 7 days, Last Month, Custom Range
+Platforms & Reports Page
+Lists all available platforms
+Only Instagram is functional for MVP
+Shows sync status, report history
+SentiWiz Agent Page
+Future automation, suggestions, AI triggers
+Settings Page
+Account details, email preferences
+Support Page
+FAQs, Contact Support
+
+ 3. API Endpoints (MVP)
+3.1 User APIs
+POST /signup
+POST /login
+GET /verify-email
+GET /user-profile
+3.2 Comment APIs
+POST /fetch-comments
+GET /comments?range=7d
+3.3 Sentiment APIs
+POST /analyze-comments
+GET /sentiments
+3.4 Reports APIs
+POST /generate-report
+GET /report/:id
+3.5 Platform APIs
+GET /platforms
+POST /connect
+GET /sync-status
+
+💡 4. Background Tasks & Scheduler
+Comment Fetch Cron: Scheduled jobs to pull new Instagram comments
+Analysis Worker: Background process to analyze comments via ML model
+Report Generator: Generates PDF/CSV reports
+Email Notifier: Sends alert/report emails
+
+📊 5. State Management
+Loading States: UI waits for confirmation (fetching, processing, syncing)
+Error Handling: Catch and log API or task failures
+Alert State: Critical changes (e.g., sentiment spike) trigger backend alerts
+
+📊 6. User Roles
+Business Admin (Only)
+Single-user login per business
+Full access to dashboard, settings, reports, integrations
+
+📂 7. Database Management
+7.1 Database Engine
+PostgreSQL (Supabase-managed)
+Access Control: Enforced via Supabase RLS (Row-Level Security)
+7.2 Design Approach
+Normalization for relational clarity
+Use of JSONB for flexible fields (raw data)
+Indexed fields for fast filtering on date/sentiment
+
+📈 8. Database Schema
+8.1 Tables
+users
+id (UUID)
+email
+created_at
+is_verified
+platforms
+id (UUID)
+user_id
+platform_name
+access_token
+last_synced_at
+comments
+id
+user_id
+platform_id
+comment_text
+timestamp
+sentiments
+id
+comment_id
+user_id
+sentiment_label
+confidence_score
+tags
+id
+comment_id
+tag_text
+sentiment
+alerts
+id
+user_id
+trigger
+severity
+reports
+id
+user_id
+report_type
+report_url
+
+🔐 9. Row-Level Security (RLS)
+9.1 Enabled for All Sensitive Tables
+users, platforms, comments, sentiments, alerts, tags, reports
+9.2 Example Policy (for comments)
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Read own comments"
+  ON comments
+  FOR SELECT
+  USING (user_id = auth.uid());
+9.3 Benefits
+Enforces secure multi-tenancy
+Prevents unauthorized access
+Works natively with Supabase Auth
+
+

@@ -1,0 +1,107 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+SentiWiz: Security and Compliance Rules
+1. Authentication & Access Control
+Authentication Provider: Supabase Auth (email-based verification only for MVP)
+
+Access Control Model: Role-based access (currently only Business Admin)
+
+Token Handling:
+
+Use JWTs securely with short expiration
+
+Refresh tokens via Supabase’s built-in mechanism
+
+Session Management:
+
+Logout on inactivity (30 mins timeout)
+
+Automatic logout on token expiry
+
+2. Row-Level Security (RLS) - Supabase
+RLS Enabled for all sensitive tables: users, platforms, comments, reports
+
+Policies:
+
+Users can only access rows where user_id = their own Supabase UID
+
+No anonymous or public access permitted
+
+Policy Review Cycle: Quarterly or post-release
+
+3. Data Handling & Privacy
+Data Storage:
+
+All data stored in Supabase PostgreSQL
+
+File URLs stored for report downloads, accessible only by the user
+
+Data Minimization:
+
+Only fetch required fields from APIs
+
+No storage of platform passwords or API credentials
+
+Data Retention Policy:
+
+Reports stored for 90 days
+
+Logs and sentiment data stored for 1 year unless deleted earlier by user
+
+User Deletion Protocol:
+
+Users can request complete data wipeout via Settings or Support
+
+4. API Security
+Secure API Tokens: Use platform-specific API keys stored in Supabase vault or encrypted storage
+
+Rate Limiting & Throttling: Implement platform-based limits (especially for Instagram Graph API)
+
+Input Validation: Sanitize all incoming data and parameters
+
+Error Handling: Don’t expose stack traces or internal messages
+
+5. Infrastructure Security (For Future Deployment Phase)
+HTTPS enforced for all routes
+
+Use of TLS 1.2 or above for encryption
+
+Firewalls and IP filtering at backend infrastructure level
+
+Access logging and monitoring planned via Supabase and external tools
+
+6. Compliance & Legal
+GDPR Compliance (planned for scale):
+
+Explicit consent during signup
+
+Data deletion on request
+
+Data portability supported via CSV downloads
+
+Data Localization:
+
+Supabase region selected per compliance needs
+
+User Agreement:
+
+Privacy Policy and Terms of Use linked on login/signup
+
+Regular updates with version control
+
+7. Incident Response Plan
+Real-time alerting system via Supabase functions + third-party tooling (future)
+
+Email notification to dev/admin team in case of:
+
+Data breach
+
+Platform integration failure
+
+Report generation issues
+
+
+Incident audit trail maintained for 90 days

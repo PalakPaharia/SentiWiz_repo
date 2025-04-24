@@ -1,0 +1,283 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+SentiWiz: Project Requirements Document
+
+1. Introduction
+
+Project Name: SentiWizPurpose: SentiWiz is a comprehensive sentiment analysis platform aimed at helping businesses extract actionable insights from customer feedback collected across various digital platforms. Using AI and machine learning, the platform provides a centralized dashboard for tracking sentiment trends, customer reactions, and platform-wise insights to empower data-driven decision-making.
+
+2. Objectives
+
+Provide AI-powered sentiment detection and emotion analysis.
+
+Helps in understanding the overall customer perception.
+
+Track brand reputation across social media and review platforms.
+
+Keeps marketing and customer service teams aligned with public opinion.
+
+Generate downloadable reports for internal communication and insights.
+
+Reduces manual reporting overhead and ensures consistency.
+
+Allow historical and real-time insights using intuitive dashboards.
+
+Enables performance comparison over time.
+
+Ensure scalability, security, and ease of maintenance.
+
+Designed to grow with user base and feature set.
+
+3. Scope
+
+In-Scope (MVP):
+
+Email-based authentication using Supabase with mandatory verification.
+
+Sentiment data extraction only from Instagram (Graph API).
+
+Dashboard components:
+
+Total Comments: Total data points collected.
+
+Sentiment Trend: Graphical emotion timeline.
+
+Word Cloud: Frequently used terms.
+
+Tag Sentiments: Contextual emotion mapping.
+
+Trend Alerts: Sudden spikes in sentiment/emotion.
+
+Global filter for Last 7 Days, Last Month, and Custom Date Range.
+
+Report scheduler with CSV and PDF outputs via email.
+
+Settings and Support pages for managing account and issue resolution.
+
+Future Scope:
+
+Additional platforms: Google Reviews, YouTube, Twitter, LinkedIn, and website review plugins.
+
+SentiWiz Agent: Chatbot/LLM module for natural language interaction with insights.
+
+Notification system for trend-based triggers.
+
+Role-based access (Team Members, Viewers).
+
+OAuth-based sign-in (Google, Microsoft, etc.).
+
+4. User Roles
+
+Business Admin (MVP-only role):
+
+Full platform access.
+
+Can manage integrations, view reports, and trigger data sync.
+
+Primary user type for businesses.
+
+5. Functional Requirements
+
+Authentication:
+
+Sign-up/login via Supabase.
+
+Restrict access until email is verified.
+
+Secure token/session management.
+
+Platform Integration:
+
+Instagram fully functional.
+
+UI tiles available for other platforms (disabled initially).
+
+Dashboard Components:
+
+Global filters apply across all components.
+
+Sentiment calculations displayed using visual charts (Recharts).
+
+Data dynamically updates based on time range selected.
+
+Reports Module:
+
+Exportable CSV and PDF with sentiment summaries.
+
+Email delivery and UI-based downloads.
+
+Scheduled jobs managed via cron/backend tasks.
+
+UI Implementation:
+
+Built using TailwindCSS with shadcn/ui for responsiveness.
+
+Logo-themed color palette.
+
+Mobile-first and desktop responsive layouts.
+
+6. Non-Functional Requirements
+
+Performance:
+
+Caching to reduce repeated API load.
+
+Lazy loading of dashboard tiles.
+
+Scalability:
+
+Modular backend allows easy addition of new platforms.
+
+Stateless API design for better concurrency handling.
+
+Security:
+
+Supabase RLS ensures user-level data separation.
+
+JWT tokens and secure session handling.
+
+Maintainability:
+
+Code organized with reusable modules.
+
+Well-documented API and logic separation.
+
+Availability:
+
+Designed for 99.5% uptime using serverless and managed services.
+
+7. Technical Stack
+
+Frontend: React 18 + TypeScript, Tailwind CSS, shadcn/ui
+
+React’s component-based structure supports reusable logic.
+
+TypeScript ensures type safety.
+
+Tailwind allows fast, consistent design iteration.
+
+Backend: Node.js (with optional Firebase Functions), Python for NLP/ML logic
+
+Node.js handles API logic, task scheduling.
+
+Python powers sentiment analysis using ML models.
+
+Database: Supabase (PostgreSQL)
+
+Reliable, open-source PostgreSQL DB.
+
+Easy integration with RLS for per-user data access.
+
+Authentication: Supabase Auth
+
+Email-only sign-up for now.
+
+Easy integration with frontend and RLS enforcement.
+
+Scheduler: Backend cron tasks or job queues
+
+Used for timed sentiment sync and report delivery.
+
+Reporting: Puppeteer/Playwright for PDF rendering, custom logic for CSV
+
+Enables dynamic, styled reports with accurate data snapshots.
+
+Visualization: Recharts
+
+Highly customizable and responsive charting library for trends.
+
+8. Database Schema Overview
+
+Users Table
+
+id, email, verified_at, created_at
+
+Central user identity and verification info.
+
+Sessions Table
+
+session_id, user_id, token
+
+Stores active sessions securely.
+
+Platforms Table
+
+id, user_id, platform_name, is_connected, created_at
+
+Tracks user-specific integrations.
+
+Comments Table
+
+id, user_id, platform_id, text, timestamp, sentiment, tags
+
+Main data source for analysis and trends.
+
+Reports Table
+
+id, user_id, file_type, date_range, file_url, created_at
+
+Tracks generated reports for UI download and history.
+
+9. Supabase Policies (RLS)
+
+RLS ensures that users can only access their data.
+
+Users: Only logged-in users can view their own record.
+
+Platforms/Comments/Reports: Filtered by user_id match.
+
+RLS prevents accidental or malicious data leaks.
+
+10. External APIs & Integrations
+
+Currently: Instagram Graph API (MVP).
+
+Future Integrations:
+
+Google Business Reviews API
+
+YouTube Data API
+
+Twitter (X) Developer API
+
+LinkedIn Public Comments API
+
+These APIs will allow sentiment extraction across broader social footprints.
+
+11. Assumptions
+
+All users register with an email.
+
+Each business manages its own account and integrations.
+
+Some platforms may have API rate limits or review policies.
+
+12. Constraints
+
+Instagram is the only active platform at MVP.
+
+Email verification required before accessing dashboard.
+
+Reporting depends on successfully fetched and analyzed data.
+
+13. Open Questions
+
+What’s the timeline for onboarding the next platform?
+
+Should ML models vary platform-wise for precision?
+
+Do we prioritize PWA/mobile optimization in Phase 1?
+
+14. Glossary
+
+RLS: Row-Level Security
+
+MVP: Minimum Viable Product
+
+ML: Machine Learning
+
+
+UI: User Interface
