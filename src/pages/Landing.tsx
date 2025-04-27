@@ -1,6 +1,6 @@
 /**
  * Page: Landing
- * Description: Public landing page for SentiPulse
+ * Description: Public landing page for SentiWiz
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -122,7 +122,7 @@ const Benefits = () => (
   <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
     <div className="max-w-7xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-900">Why Choose SentiPulse?</h2>
+        <h2 className="text-3xl font-bold text-gray-900">Why Choose SentiWiz?</h2>
         <p className="mt-4 text-xl text-gray-600">
           Powerful features to help you understand and act on customer feedback
         </p>
@@ -206,7 +206,7 @@ const CTA = () => (
     <div className="max-w-4xl mx-auto text-center">
       <h2 className="text-3xl font-bold text-white">Ready to understand your customers better?</h2>
       <p className="mt-4 text-xl text-primary-foreground/80">
-        Join thousands of businesses that use SentiPulse to improve customer satisfaction.
+        Join thousands of businesses that use SentiWiz to improve customer satisfaction.
       </p>
       <div className="mt-10">
         <Button size="lg" className="bg-white text-primary hover:bg-white/90" asChild>
@@ -222,7 +222,7 @@ const Footer = () => (
   <footer className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
       <div>
-        <h3 className="text-lg font-semibold mb-4">SentiPulse</h3>
+        <h3 className="text-lg font-semibold mb-4">SentiWiz</h3>
         <p className="text-gray-400">AI-powered sentiment analysis for better business decisions.</p>
       </div>
       <div>
@@ -251,7 +251,7 @@ const Footer = () => (
       </div>
     </div>
     <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-gray-800 text-center">
-      <p className="text-gray-400">&copy; {new Date().getFullYear()} SentiPulse. All rights reserved.</p>
+      <p className="text-gray-400">&copy; {new Date().getFullYear()} SentiWiz. All rights reserved.</p>
     </div>
   </footer>
 );

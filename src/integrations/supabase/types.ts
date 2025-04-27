@@ -6,10 +6,73 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
-      [_ in never]: never
+      instagram_accounts: {
+        Row: {
+          id: string
+          user_id: string
+          username: string
+          access_token: string
+          connected_at: string
+          last_synced_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          username: string
+          access_token: string
+          connected_at: string
+          last_synced_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          username?: string
+          access_token?: string
+          connected_at?: string
+          last_synced_at?: string | null
+          created_at?: string
+        }
+      }
+      instagram_comments: {
+        Row: {
+          id: string
+          comment_id: string
+          media_id: string
+          text: string
+          username: string
+          timestamp: string
+          sentiment: Json | null
+          processed_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          comment_id: string
+          media_id: string
+          text: string
+          username: string
+          timestamp: string
+          sentiment?: Json | null
+          processed_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          comment_id?: string
+          media_id?: string
+          text?: string
+          username?: string
+          timestamp?: string
+          sentiment?: Json | null
+          processed_at?: string | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

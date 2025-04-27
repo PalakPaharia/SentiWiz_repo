@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -23,7 +22,7 @@ type NavItem = {
 const mainNavItems: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Platforms & Reports', href: '/platforms', icon: MonitorPlay },
-  { name: 'Sentipulse Agent', href: '/agent', icon: MessageSquare },
+  { name: 'SentiWiz Agent', href: '/agent', icon: MessageSquare },
   { name: 'Settings', href: '/settings', icon: Settings },
   { name: 'Support', href: '/support', icon: HelpCircle },
 ];
@@ -43,7 +42,7 @@ export default function Sidebar() {
         <div className="h-16 flex items-center justify-between px-4">
           {!collapsed && (
             <Link to="/dashboard" className="text-xl font-bold">
-              SentiPulse
+              SentiWiz
             </Link>
           )}
           <Button

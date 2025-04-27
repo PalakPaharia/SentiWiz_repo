@@ -2,139 +2,111 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import MainLayout from "./layouts/MainLayout";
-import Index from "./pages/Index";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import EmailVerification from "./pages/EmailVerification";
-import Dashboard from "./pages/Dashboard";
-import Platforms from "./pages/Platforms";
-import Agent from "./pages/Agent";
-import Settings from "./pages/Settings";
-import Support from "./pages/Support";
-import NotFound from "./pages/NotFound";
-import React from "react";
+import { Routes, Route } from 'react-router-dom';
+import { testSetup } from './utils/test-setup';
+import { AuthProvider } from './contexts/AuthContext';
+import MainLayout from './layouts/MainLayout';
+import Index from './pages/Index';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import EmailVerification from './pages/EmailVerification';
+import Dashboard from './pages/Dashboard';
+import Platforms from './pages/Platforms';
+import Agent from './pages/Agent';
+import Settings from './pages/Settings';
+import Support from './pages/Support';
+import NotFound from './pages/NotFound';
+import InstagramCallback from './pages/InstagramCallback';
+import ProtectedRoute from './components/ProtectedRoute';
+import EmailVerificationRoute from './components/EmailVerificationRoute';
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
-// Protected route component
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isEmailConfirmed, isLoading } = useAuth();
-  
-  if (isLoading) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  }
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-  
-  if (!isEmailConfirmed) {
-    return <Navigate to="/email-verification" />;
-  }
-  
-  return <>{children}</>;
-};
-
-// EmailVerificationRoute component
-const EmailVerificationRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isEmailConfirmed, isLoading } = useAuth();
-  
-  if (isLoading) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  }
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-  
-  if (isEmailConfirmed) {
-    return <Navigate to="/dashboard" />;
-  }
-  
-  return <>{children}</>;
-};
-
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <TooltipProvider>
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<MainLayout><Index /></MainLayout>} />
-              <Route path="/login" element={<MainLayout><Login /></MainLayout>} />
-              <Route path="/signup" element={<MainLayout><Signup /></MainLayout>} />
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route index element={<Index />} />
+              <Route path="login" element={<Login />} />
+              <Route path="signup" element={<Signup />} />
               <Route 
-                path="/email-verification" 
+                path="email-verification" 
                 element={
-                  <MainLayout>
-                    <EmailVerificationRoute>
-                      <EmailVerification />
-                    </EmailVerificationRoute>
-                  </MainLayout>
+                  <EmailVerificationRoute>
+                    <EmailVerification />
+                  </EmailVerificationRoute>
                 } 
               />
               <Route 
-                path="/dashboard" 
+                path="dashboard" 
                 element={
-                  <MainLayout>
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  </MainLayout>
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
                 } 
               />
               <Route 
-                path="/platforms" 
+                path="platforms" 
                 element={
-                  <MainLayout>
-                    <ProtectedRoute>
-                      <Platforms />
-                    </ProtectedRoute>
-                  </MainLayout>
+                  <ProtectedRoute>
+                    <Platforms />
+                  </ProtectedRoute>
                 } 
               />
               <Route 
-                path="/agent" 
+                path="agent" 
                 element={
-                  <MainLayout>
-                    <ProtectedRoute>
-                      <Agent />
-                    </ProtectedRoute>
-                  </MainLayout>
+                  <ProtectedRoute>
+                    <Agent />
+                  </ProtectedRoute>
                 } 
               />
               <Route 
-                path="/settings" 
+                path="settings" 
                 element={
-                  <MainLayout>
-                    <ProtectedRoute>
-                      <Settings />
-                    </ProtectedRoute>
-                  </MainLayout>
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
                 } 
               />
               <Route 
-                path="/support" 
+                path="support" 
                 element={
-                  <MainLayout>
-                    <ProtectedRoute>
-                      <Support />
-                    </ProtectedRoute>
-                  </MainLayout>
+                  <ProtectedRoute>
+                    <Support />
+                  </ProtectedRoute>
                 } 
               />
-              <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
-            </Routes>
-          </TooltipProvider>
+              <Route path="instagram/callback" element={<InstagramCallback />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+          <Toaster />
+          {import.meta.env.DEV && (
+            <button
+              onClick={() => testSetup()}
+              style={{
+                position: 'fixed',
+                bottom: '20px',
+                right: '20px',
+                padding: '10px',
+                background: '#4CAF50',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                zIndex: 9999,
+              }}
+            >
+              Test Setup
+            </button>
+          )}
         </AuthProvider>
-      </BrowserRouter>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 };

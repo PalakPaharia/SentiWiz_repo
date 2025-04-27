@@ -1,5 +1,4 @@
-
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { type Platform } from "@/constants/platforms";
 import { cn } from "@/lib/utils";
@@ -7,6 +6,7 @@ import { BarChart3, Link2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "react-router-dom";
+import InstagramConnect from './InstagramConnect';
 
 type PlatformCardProps = {
   platform: Platform;
@@ -24,6 +24,10 @@ export default function PlatformCard({ platform, onSync }: PlatformCardProps) {
       setIsSyncing(false);
     }
   };
+
+  if (platform.id === 'instagram') {
+    return <InstagramConnect />;
+  }
 
   return (
     <Card className={cn(

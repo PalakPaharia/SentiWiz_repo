@@ -26,9 +26,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
+        if (!mounted) return;
+        
         console.log('Auth event:', event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
@@ -40,7 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Handle email verification updates
         if (event === 'USER_UPDATED' && isConfirmed) {
           console.log('User verified email, redirecting to dashboard...');
-          navigate('/dashboard');
+          try {
+            navigate('/dashboard');
+          } catch (error) {
+            console.error('Navigation error:', error);
+            // Fallback to window.location if navigation fails
+            window.location.href = '/dashboard';
+          }
         }
         
         setIsLoading(false);
@@ -49,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      if (!mounted) return;
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setIsEmailConfirmed(!!currentSession?.user?.email_confirmed_at);
@@ -56,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
@@ -144,7 +156,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) {
         throw error;
       }
-      navigate('/login');
+      try {
+        navigate('/login');
+      } catch (error) {
+        console.error('Navigation error:', error);
+        // Fallback to window.location if navigation fails
+        window.location.href = '/login';
+      }
     } catch (error: any) {
       console.error('Logout error:', error.message);
       toast({
