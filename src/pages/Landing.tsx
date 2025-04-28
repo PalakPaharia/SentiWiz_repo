@@ -23,11 +23,11 @@ const Hero = () => (
   <section className="relative overflow-hidden bg-gradient-to-br from-[#1a2657] via-[#23294A] to-[#2E4670] py-20 px-4 sm:px-6 lg:px-8">
     <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2670&q=80')] bg-cover bg-center"></div>
     <div className="relative max-w-7xl mx-auto">
-      <div className="flex items-center justify-center mb-10">
+      <div className="flex items-center justify-center mb-0">
         <img 
           src="/lovable-uploads/7c593e41-fc53-4f79-83cc-2986b4c8b503.png" 
           alt="SentiWiz Logo" 
-          className="h-20 w-auto"
+          className="h-40 w-auto"
           style={{ background: "transparent" }}
         />
       </div>

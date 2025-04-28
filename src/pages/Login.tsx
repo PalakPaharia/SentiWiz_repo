@@ -49,10 +49,18 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Sign in to SentiPulse</CardTitle>
+        <CardHeader className="space-y-4">
+          <div className="flex justify-center">
+            <img
+              src="/sentiwiz-logo.png"
+              alt="SentiWiz"
+              className="h-20 w-auto"
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          <CardTitle className="text-2xl font-semibold text-center">Welcome back</CardTitle>
           <CardDescription className="text-center">
-            Enter your email and password to access your account
+            Sign in to your account to continue
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -71,6 +79,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="bg-white"
               />
             </div>
             <div className="space-y-2">
@@ -87,64 +96,18 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="bg-white"
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading || authLoading}>
               {isLoading || authLoading ? 'Signing in...' : 'Sign in'}
             </Button>
-
-            <div className="flex items-center">
-              <Separator className="flex-grow" />
-              <span className="mx-4 text-sm text-gray-500">OR</span>
-              <Separator className="flex-grow" />
-            </div>
-
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="w-full bg-white hover:bg-gray-50"
-              onClick={handleDemoLogin}
-            >
-              Try Demo Account
-            </Button>
           </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">Or continue with</span>
-              </div>
-            </div>
-
-            <div className="mt-6 flex gap-2">
-              <Button variant="outline" className="w-full" disabled>
-                <Facebook className="h-5 w-5 mr-2" />
-                Facebook
-              </Button>
-              <Button variant="outline" className="w-full" disabled>
-                <Twitter className="h-5 w-5 mr-2" />
-                Twitter
-              </Button>
-            </div>
-            <div className="mt-2 flex gap-2">
-              <Button variant="outline" className="w-full" disabled>
-                <Linkedin className="h-5 w-5 mr-2" />
-                LinkedIn
-              </Button>
-              <Button variant="outline" className="w-full" disabled>
-                <Instagram className="h-5 w-5 mr-2" />
-                Instagram
-              </Button>
-            </div>
-          </div>
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex justify-center border-t pt-6">
           <div className="text-sm">
             Don't have an account?{' '}
-            <Link to="/signup" className="text-primary hover:underline">
+            <Link to="/signup" className="text-primary hover:underline font-medium">
               Sign up
             </Link>
           </div>
