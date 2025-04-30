@@ -15,14 +15,19 @@ class InstagramClient {
    * Get the Instagram OAuth URL for user authentication
    */
   getAuthUrl(): string {
+    // Generate a random state for CSRF protection
+    const state = Math.random().toString(36).substring(7);
+    sessionStorage.setItem('instagram_auth_state', state);
+
     const params = new URLSearchParams({
       client_id: this.clientId,
       redirect_uri: this.redirectUri,
-      scope: 'user_profile,user_media',
+      scope: 'instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments',
       response_type: 'code',
+      state: state
     });
 
-    return `https://api.instagram.com/oauth/authorize?${params.toString()}`;
+    return `https://www.instagram.com/oauth/authorize?${params.toString()}`;
   }
 
   /**
@@ -43,10 +48,22 @@ class InstagramClient {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to get access token');
+      const error = await response.json();
+      throw new Error(error.error_message || 'Failed to get access token');
     }
 
-    return response.json();
+    const shortLivedToken = await response.json();
+
+    // Exchange for long-lived token
+    const longLivedTokenResponse = await fetch(
+      `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${this.clientSecret}&access_token=${shortLivedToken.access_token}`
+    );
+
+    if (!longLivedTokenResponse.ok) {
+      throw new Error('Failed to get long-lived token');
+    }
+
+    return longLivedTokenResponse.json();
   }
 
   /**
@@ -54,7 +71,7 @@ class InstagramClient {
    */
   async getUserProfile(accessToken: string): Promise<InstagramUserProfile> {
     const response = await fetch(
-      `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
+      `https://graph.instagram.com/v22.0/me?fields=id,username,account_type,media_count&access_token=${accessToken}`
     );
 
     if (!response.ok) {
@@ -69,7 +86,7 @@ class InstagramClient {
    */
   async getUserMedia(accessToken: string, limit = 20): Promise<any> {
     const response = await fetch(
-      `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp,username&limit=${limit}&access_token=${accessToken}`
+      `https://graph.instagram.com/v22.0/me/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp,username,comments_count&limit=${limit}&access_token=${accessToken}`
     );
 
     if (!response.ok) {
@@ -84,7 +101,7 @@ class InstagramClient {
    */
   async getMediaComments(mediaId: string, accessToken: string): Promise<any> {
     const response = await fetch(
-      `https://graph.instagram.com/${mediaId}/comments?fields=text,timestamp,username&access_token=${accessToken}`
+      `https://graph.instagram.com/v22.0/${mediaId}/comments?fields=text,timestamp,username,replies{text,timestamp,username}&access_token=${accessToken}`
     );
 
     if (!response.ok) {

@@ -50,17 +50,19 @@ export class InstagramService {
       const { data: accounts, error: accountsError } = await supabase
         .from('instagram_accounts')
         .select('*')
-        .single();
+        .limit(1);
 
       if (accountsError) throw accountsError;
-      if (!accounts) throw new Error('No Instagram account connected');
+      if (!accounts?.length) throw new Error('No Instagram account connected');
+
+      const account = accounts[0];
 
       // Get recent media
-      const mediaResponse = await instagramClient.getUserMedia(accounts.access_token);
+      const mediaResponse = await instagramClient.getUserMedia(account.access_token);
       
       // For each media item, get comments
       for (const media of mediaResponse.data) {
-        const comments = await instagramClient.getMediaComments(media.id, accounts.access_token);
+        const comments = await instagramClient.getMediaComments(media.id, account.access_token);
         
         // Store comments in Supabase
         const { error } = await supabase
@@ -85,7 +87,7 @@ export class InstagramService {
       const { error: updateError } = await supabase
         .from('instagram_accounts')
         .update({ last_synced_at: new Date().toISOString() })
-        .eq('user_id', accounts.user_id);
+        .eq('user_id', account.user_id);
 
       if (updateError) throw updateError;
 
@@ -101,17 +103,19 @@ export class InstagramService {
    */
   static async checkConnection() {
     try {
-      const { data, error } = await supabase
+      const { data: accounts, error } = await supabase
         .from('instagram_accounts')
         .select('*')
-        .single();
+        .limit(1);
 
       if (error) throw error;
 
+      const account = accounts?.[0];
+      
       return {
-        isConnected: !!data,
-        lastSyncedAt: data?.last_synced_at,
-        username: data?.username,
+        isConnected: !!account,
+        lastSyncedAt: account?.last_synced_at || null,
+        username: account?.username || null,
       };
     } catch (error) {
       console.error('Instagram connection check error:', error);
