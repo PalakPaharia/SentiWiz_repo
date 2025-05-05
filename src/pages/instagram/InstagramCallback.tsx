@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleInstagramCallback } from '@/lib/instagram';
 
-export function InstagramCallback() {
+const InstagramCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,4 +49,6 @@ export function InstagramCallback() {
       </div>
     </div>
   );
-} 
+}
+
+export default InstagramCallback; 

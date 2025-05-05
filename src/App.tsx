@@ -16,7 +16,7 @@ import Agent from './pages/Agent';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
 import NotFound from './pages/NotFound';
-import InstagramCallback from './pages/InstagramCallback';
+import InstagramCallback from './pages/instagram/InstagramCallback';
 import ProtectedRoute from './components/ProtectedRoute';
 import EmailVerificationRoute from './components/EmailVerificationRoute';
 
