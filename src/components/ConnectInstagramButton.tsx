@@ -1,3 +1,7 @@
+// Instagram Connect button implemented according to:
+// https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login
+// Always refer to the official documentation for scopes, endpoints, and flows.
+
 import { Button } from "@/components/ui/button";
 import { initiateInstagramAuth } from "@/lib/instagram";
 

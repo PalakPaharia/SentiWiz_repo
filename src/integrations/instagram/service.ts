@@ -1,3 +1,7 @@
+// Instagram service implemented according to:
+// https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login
+// Always refer to the official documentation for scopes, endpoints, and flows.
+
 import { supabase } from '../supabase/client';
 import { instagramClient } from './client';
 import type { InstagramTokenResponse, InstagramUserProfile } from './types';
@@ -16,7 +20,7 @@ export class InstagramService {
    */
   static async handleAuthCallback(code: string) {
     try {
-      // Exchange code for access token
+      // Exchange code for access token (Instagram Login flow)
       const tokenResponse = await instagramClient.getAccessToken(code);
       
       // Get user profile

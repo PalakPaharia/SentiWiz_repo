@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { InstagramService } from '@/integrations/instagram/service';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function InstagramConnect() {
   const [isConnected, setIsConnected] = useState(false);
@@ -10,6 +11,7 @@ export default function InstagramConnect() {
   const [username, setUsername] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkConnection();
@@ -37,43 +39,8 @@ export default function InstagramConnect() {
     InstagramService.startAuth();
   };
 
-  const handleDisconnect = async () => {
-    try {
-      await InstagramService.disconnect();
-      setIsConnected(false);
-      setLastSync(null);
-      setUsername(null);
-      toast({
-        title: 'Success',
-        description: 'Instagram account disconnected successfully',
-      });
-    } catch (error) {
-      console.error('Error disconnecting:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to disconnect Instagram account',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleSync = async () => {
-    try {
-      await InstagramService.syncComments();
-      const status = await InstagramService.checkConnection();
-      setLastSync(status.lastSyncedAt);
-      toast({
-        title: 'Success',
-        description: 'Instagram comments synced successfully',
-      });
-    } catch (error) {
-      console.error('Error syncing:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to sync Instagram comments',
-        variant: 'destructive',
-      });
-    }
+  const handleReport = () => {
+    navigate('/instagram/report');
   };
 
   if (isLoading) {
@@ -99,19 +66,7 @@ export default function InstagramConnect() {
       </CardHeader>
       <CardContent className="space-y-4">
         {isConnected ? (
-          <>
-            <div className="text-sm text-muted-foreground">
-              {lastSync
-                ? `Last synced: ${new Date(lastSync).toLocaleString()}`
-                : 'Not synced yet'}
-            </div>
-            <div className="flex space-x-2">
-              <Button onClick={handleSync}>Sync Comments</Button>
-              <Button variant="outline" onClick={handleDisconnect}>
-                Disconnect
-              </Button>
-            </div>
-          </>
+          <Button onClick={handleReport}>Report</Button>
         ) : (
           <Button onClick={handleConnect}>Connect Instagram</Button>
         )}

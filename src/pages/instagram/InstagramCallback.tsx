@@ -1,3 +1,7 @@
+// Instagram OAuth callback handler implemented according to:
+// https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login
+// Always refer to the official documentation for scopes, endpoints, and flows.
+
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleInstagramCallback } from '@/lib/instagram';
@@ -27,12 +31,12 @@ const InstagramCallback = () => {
           throw new Error('Missing required parameters');
         }
 
-        // Process the callback
+        // Process the callback using the Instagram Login flow
         await handleInstagramCallback(code, state);
 
         // Redirect to platforms page on success
         navigate('/platforms?success=true');
-      } catch (error) {
+      } catch (error: any) {
         console.error('Callback processing error:', error);
         navigate('/platforms?error=' + encodeURIComponent(error.message));
       }
@@ -49,6 +53,6 @@ const InstagramCallback = () => {
       </div>
     </div>
   );
-}
+};
 
 export default InstagramCallback; 

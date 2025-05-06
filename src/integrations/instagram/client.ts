@@ -1,3 +1,7 @@
+// Instagram API client implemented according to:
+// https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login
+// Always refer to the official documentation for scopes, endpoints, and flows.
+
 import { InstagramAuthResponse, InstagramTokenResponse, InstagramUserProfile } from './types';
 
 class InstagramClient {
@@ -13,6 +17,7 @@ class InstagramClient {
 
   /**
    * Get the Instagram OAuth URL for user authentication
+   * See: https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login
    */
   getAuthUrl(): string {
     // Generate a random state for CSRF protection
@@ -22,7 +27,7 @@ class InstagramClient {
     const params = new URLSearchParams({
       client_id: this.clientId,
       redirect_uri: this.redirectUri,
-      scope: 'instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments',
+      scope: 'instagram_business_basic,instagram_business_content_publish,instagram_business_manage_messages,instagram_business_manage_comments',
       response_type: 'code',
       state: state
     });
@@ -31,20 +36,13 @@ class InstagramClient {
   }
 
   /**
-   * Exchange authorization code for access token
+   * Exchange authorization code for access token (handled by backend proxy for security)
    */
   async getAccessToken(code: string): Promise<InstagramTokenResponse> {
-    const params = new URLSearchParams({
-      client_id: this.clientId,
-      client_secret: this.clientSecret,
-      grant_type: 'authorization_code',
-      redirect_uri: this.redirectUri,
-      code,
-    });
-
-    const response = await fetch('https://api.instagram.com/oauth/access_token', {
+    const response = await fetch('/api/instagram/oauth/access_token', {
       method: 'POST',
-      body: params,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, redirect_uri: this.redirectUri }),
     });
 
     if (!response.ok) {
@@ -52,18 +50,7 @@ class InstagramClient {
       throw new Error(error.error_message || 'Failed to get access token');
     }
 
-    const shortLivedToken = await response.json();
-
-    // Exchange for long-lived token
-    const longLivedTokenResponse = await fetch(
-      `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${this.clientSecret}&access_token=${shortLivedToken.access_token}`
-    );
-
-    if (!longLivedTokenResponse.ok) {
-      throw new Error('Failed to get long-lived token');
-    }
-
-    return longLivedTokenResponse.json();
+    return response.json();
   }
 
   /**
