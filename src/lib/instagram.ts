@@ -6,10 +6,23 @@ const INSTAGRAM_APP_ID = import.meta.env.VITE_INSTAGRAM_CLIENT_ID;
 const INSTAGRAM_APP_SECRET = import.meta.env.VITE_INSTAGRAM_CLIENT_SECRET;
 const REDIRECT_URI = import.meta.env.VITE_INSTAGRAM_REDIRECT_URI;
 
+function setStateCookie(state: string) {
+  document.cookie = `ig_oauth_state=${state}; Path=/; Secure; SameSite=Lax`;
+}
+function getStateCookie(): string | null {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ig_oauth_state=`);
+  if (parts.length === 2) return parts.pop().split(';').shift() || null;
+  return null;
+}
+function clearStateCookie() {
+  document.cookie = 'ig_oauth_state=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
+}
+
 export const initiateInstagramAuth = () => {
   // Construct state parameter for security
   const state = Math.random().toString(36).substring(7);
-  sessionStorage.setItem('instagram_auth_state', state);
+  setStateCookie(state);
 
   // Use Instagram OAuth URL for Instagram Login
   const authUrl = new URL('https://www.instagram.com/oauth/authorize');
@@ -25,11 +38,12 @@ export const initiateInstagramAuth = () => {
 export const handleInstagramCallback = async (code: string, state: string) => {
   try {
     // Verify state parameter
-    const storedState = sessionStorage.getItem('instagram_auth_state');
+    const storedState = getStateCookie();
     if (state !== storedState) {
+      clearStateCookie();
       throw new Error('Invalid state parameter');
     }
-    sessionStorage.removeItem('instagram_auth_state');
+    clearStateCookie();
 
     // Step 1: Exchange code for short-lived access token (handled by backend proxy for security)
     const response = await fetch('/api/instagram/oauth/access_token', {
