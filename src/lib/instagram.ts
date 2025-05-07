@@ -6,8 +6,17 @@ const INSTAGRAM_APP_ID = import.meta.env.VITE_INSTAGRAM_CLIENT_ID;
 const INSTAGRAM_APP_SECRET = import.meta.env.VITE_INSTAGRAM_CLIENT_SECRET;
 const REDIRECT_URI = import.meta.env.VITE_INSTAGRAM_REDIRECT_URI;
 
+function generateRandomState(length = 32) {
+  return Array.from(window.crypto.getRandomValues(new Uint8Array(length)))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 function setStateCookie(state: string) {
-  document.cookie = `ig_oauth_state=${state}; Path=/; Secure; SameSite=Lax`;
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const cookie = `ig_oauth_state=${state}; Path=/; SameSite=Lax${isLocalhost ? '' : '; Secure'}`;
+  document.cookie = cookie;
+  console.log('[IG OAUTH] Set state cookie:', cookie);
 }
 function getStateCookie(): string | null {
   const value = `; ${document.cookie}`;
@@ -17,12 +26,14 @@ function getStateCookie(): string | null {
 }
 function clearStateCookie() {
   document.cookie = 'ig_oauth_state=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
+  console.log('[IG OAUTH] Cleared state cookie');
 }
 
 export const initiateInstagramAuth = () => {
   // Construct state parameter for security
-  const state = Math.random().toString(36).substring(7);
+  const state = generateRandomState();
   setStateCookie(state);
+  console.log('[IG OAUTH] Generated state:', state);
 
   // Use Instagram OAuth URL for Instagram Login
   const authUrl = new URL('https://www.instagram.com/oauth/authorize');
@@ -39,6 +50,8 @@ export const handleInstagramCallback = async (code: string, state: string) => {
   try {
     // Verify state parameter
     const storedState = getStateCookie();
+    console.log('[IG OAUTH] Callback state:', state);
+    console.log('[IG OAUTH] Stored state:', storedState);
     if (state !== storedState) {
       clearStateCookie();
       throw new Error('Invalid state parameter');
