@@ -31,10 +31,23 @@ function clearStateCookie() {
   console.log('[IG OAUTH] Cleared state cookie');
 }
 
+function setStateLocalStorage(state: string) {
+  localStorage.setItem('ig_oauth_state', state);
+  console.log('[IG OAUTH] Set state localStorage:', state);
+}
+function getStateLocalStorage(): string | null {
+  return localStorage.getItem('ig_oauth_state');
+}
+function clearStateLocalStorage() {
+  localStorage.removeItem('ig_oauth_state');
+  console.log('[IG OAUTH] Cleared state localStorage');
+}
+
 export const initiateInstagramAuth = () => {
   // Construct state parameter for security
   const state = generateRandomState();
   setStateCookie(state);
+  setStateLocalStorage(state);
   console.log('[IG OAUTH] Generated state:', state);
 
   // Use Instagram OAuth URL for Instagram Login
@@ -45,9 +58,12 @@ export const initiateInstagramAuth = () => {
   authUrl.searchParams.append('scope', 'instagram_business_basic,instagram_business_content_publish,instagram_business_manage_messages,instagram_business_manage_comments');
   authUrl.searchParams.append('response_type', 'code');
 
-  // Add a short delay to ensure the cookie is written before redirect
+  // Add a short delay to ensure the cookie/localStorage is written before redirect
   setTimeout(() => {
-    console.log('[IG OAUTH] Redirecting to Instagram OAuth:', authUrl.toString());
+    // Confirm both are set
+    const cookieState = getStateCookie();
+    const lsState = getStateLocalStorage();
+    console.log('[IG OAUTH] Confirm before redirect - cookie:', cookieState, 'localStorage:', lsState);
     window.location.href = authUrl.toString();
   }, 150);
 };
@@ -55,14 +71,18 @@ export const initiateInstagramAuth = () => {
 export const handleInstagramCallback = async (code: string, state: string) => {
   try {
     // Verify state parameter
-    const storedState = getStateCookie();
+    const storedStateCookie = getStateCookie();
+    const storedStateLS = getStateLocalStorage();
     console.log('[IG OAUTH] Callback state:', state);
-    console.log('[IG OAUTH] Stored state:', storedState);
-    if (state !== storedState) {
+    console.log('[IG OAUTH] Stored state (cookie):', storedStateCookie);
+    console.log('[IG OAUTH] Stored state (localStorage):', storedStateLS);
+    if (state !== storedStateCookie && state !== storedStateLS) {
       clearStateCookie();
+      clearStateLocalStorage();
       throw new Error('Invalid state parameter');
     }
     clearStateCookie();
+    clearStateLocalStorage();
 
     // Step 1: Exchange code for short-lived access token (handled by backend proxy for security)
     const response = await fetch('/api/instagram/oauth/access_token', {
