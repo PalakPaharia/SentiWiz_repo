@@ -17,6 +17,8 @@ function setStateCookie(state: string) {
   const cookie = `ig_oauth_state=${state}; Path=/; SameSite=Lax${isLocalhost ? '' : '; Secure'}`;
   document.cookie = cookie;
   console.log('[IG OAUTH] Set state cookie:', cookie);
+  // Immediately log document.cookie to verify
+  console.log('[IG OAUTH] document.cookie after set:', document.cookie);
 }
 function getStateCookie(): string | null {
   const value = `; ${document.cookie}`;
@@ -43,7 +45,11 @@ export const initiateInstagramAuth = () => {
   authUrl.searchParams.append('scope', 'instagram_business_basic,instagram_business_content_publish,instagram_business_manage_messages,instagram_business_manage_comments');
   authUrl.searchParams.append('response_type', 'code');
 
-  window.location.href = authUrl.toString();
+  // Add a short delay to ensure the cookie is written before redirect
+  setTimeout(() => {
+    console.log('[IG OAUTH] Redirecting to Instagram OAuth:', authUrl.toString());
+    window.location.href = authUrl.toString();
+  }, 150);
 };
 
 export const handleInstagramCallback = async (code: string, state: string) => {
