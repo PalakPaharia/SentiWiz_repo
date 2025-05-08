@@ -15,8 +15,8 @@ function generateRandomState(length = 32) {
 }
 
 function setStateCookie(state: string) {
-  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const cookie = `ig_oauth_state=${state}; Path=/; SameSite=Lax${isLocalhost ? '' : '; Secure'}`;
+  // For debugging, set with minimal attributes
+  const cookie = `ig_oauth_state=${state}; Path=/`;
   document.cookie = cookie;
   console.log('[IG OAUTH] Set state cookie:', cookie);
   console.log('[IG OAUTH] document.cookie after set:', document.cookie);
@@ -37,11 +37,15 @@ function getStateLocalStorage(): string | null {
 
 export function ConnectInstagramButton() {
   const [loading, setLoading] = useState(false);
+  const [storageWarning, setStorageWarning] = useState('');
 
   const handleConnect = async (e: React.MouseEvent) => {
     e.preventDefault();
     setLoading(true);
     console.log('[IG OAUTH] Button clicked');
+    console.log('[IG OAUTH] Current domain:', window.location.hostname);
+    console.log('[IG OAUTH] Current protocol:', window.location.protocol);
+    console.log('[IG OAUTH] Current path:', window.location.pathname);
     // Generate state and set in both cookie and localStorage
     const state = generateRandomState();
     setStateCookie(state);
@@ -53,6 +57,7 @@ export function ConnectInstagramButton() {
     const lsState = getStateLocalStorage();
     console.log('[IG OAUTH] Confirm before redirect - cookie:', cookieState, 'localStorage:', lsState);
     if (cookieState !== state && lsState !== state) {
+      setStorageWarning('Failed to set OAuth state. Please check your browser settings and try again.');
       alert('Failed to set OAuth state. Please check your browser settings and try again.');
       setLoading(false);
       return;
@@ -72,13 +77,40 @@ export function ConnectInstagramButton() {
     }, 100); // short delay to ensure logs are flushed
   };
 
+  // Check for storage support on mount
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('ig_oauth_state_test', 'test');
+      if (localStorage.getItem('ig_oauth_state_test') !== 'test') {
+        setStorageWarning('LocalStorage is not working. Please check your browser settings.');
+      }
+      localStorage.removeItem('ig_oauth_state_test');
+    } catch (err) {
+      setStorageWarning('LocalStorage is blocked. Please check your browser settings.');
+    }
+    try {
+      document.cookie = 'ig_oauth_state_test=test; Path=/';
+      if (!document.cookie.includes('ig_oauth_state_test=test')) {
+        setStorageWarning('Cookies are not working. Please check your browser settings.');
+      }
+      document.cookie = 'ig_oauth_state_test=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
+    } catch (err) {
+      setStorageWarning('Cookies are blocked. Please check your browser settings.');
+    }
+  }
+
   return (
-    <Button 
-      onClick={handleConnect}
-      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-      disabled={loading}
-    >
-      {loading ? 'Connecting…' : 'Connect Instagram'}
-    </Button>
+    <div>
+      {storageWarning && (
+        <div style={{ color: 'red', marginBottom: 8 }}>{storageWarning}</div>
+      )}
+      <Button 
+        onClick={handleConnect}
+        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+        disabled={loading}
+      >
+        {loading ? 'Connecting…' : 'Connect Instagram'}
+      </Button>
+    </div>
   );
 } 
