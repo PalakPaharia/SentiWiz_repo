@@ -12,12 +12,16 @@ const InstagramCallback = () => {
   useEffect(() => {
     const processCallback = async () => {
       try {
+        console.log('[IG OAUTH CALLBACK] Full callback URL:', window.location.href);
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
         const state = params.get('state');
         const error = params.get('error');
         const errorReason = params.get('error_reason');
         const errorDescription = params.get('error_description');
+        console.log('[IG OAUTH CALLBACK] Query params:', Object.fromEntries(params.entries()));
+        console.log('[IG OAUTH CALLBACK] code:', code);
+        console.log('[IG OAUTH CALLBACK] state:', state);
 
         // Handle errors from Instagram
         if (error) {
@@ -27,6 +31,12 @@ const InstagramCallback = () => {
         }
 
         // Validate required parameters
+        if (!code) {
+          console.error('[IG OAUTH CALLBACK] No code received in callback!');
+        }
+        if (!state) {
+          console.error('[IG OAUTH CALLBACK] No state received in callback!');
+        }
         if (!code || !state) {
           throw new Error('Missing required parameters');
         }

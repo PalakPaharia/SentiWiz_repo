@@ -2,6 +2,7 @@
 // https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login
 // Always refer to the official documentation for scopes, endpoints, and flows.
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const INSTAGRAM_APP_ID = import.meta.env.VITE_INSTAGRAM_CLIENT_ID;
@@ -35,8 +36,12 @@ function getStateLocalStorage(): string | null {
 }
 
 export function ConnectInstagramButton() {
-  const handleConnect = (e: React.MouseEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleConnect = async (e: React.MouseEvent) => {
     e.preventDefault();
+    setLoading(true);
+    console.log('[IG OAUTH] Button clicked');
     // Generate state and set in both cookie and localStorage
     const state = generateRandomState();
     setStateCookie(state);
@@ -49,6 +54,7 @@ export function ConnectInstagramButton() {
     console.log('[IG OAUTH] Confirm before redirect - cookie:', cookieState, 'localStorage:', lsState);
     if (cookieState !== state && lsState !== state) {
       alert('Failed to set OAuth state. Please check your browser settings and try again.');
+      setLoading(false);
       return;
     }
 
@@ -60,15 +66,19 @@ export function ConnectInstagramButton() {
     authUrl.searchParams.append('scope', 'instagram_business_basic,instagram_business_content_publish,instagram_business_manage_messages,instagram_business_manage_comments');
     authUrl.searchParams.append('response_type', 'code');
     console.log('[IG OAUTH] Redirecting to Instagram OAuth:', authUrl.toString());
-    window.location.href = authUrl.toString();
+    setTimeout(() => {
+      setLoading(false);
+      window.location.href = authUrl.toString();
+    }, 100); // short delay to ensure logs are flushed
   };
 
   return (
     <Button 
       onClick={handleConnect}
       className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+      disabled={loading}
     >
-      Connect Instagram
+      {loading ? 'Connecting…' : 'Connect Instagram'}
     </Button>
   );
 } 
