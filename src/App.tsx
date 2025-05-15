@@ -19,6 +19,7 @@ import NotFound from './pages/NotFound';
 import InstagramCallback from './pages/instagram/InstagramCallback';
 import ProtectedRoute from './components/ProtectedRoute';
 import EmailVerificationRoute from './components/EmailVerificationRoute';
+import InstagramStats from './pages/instagram/InstagramStats';
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
@@ -82,6 +83,14 @@ const App = () => {
                 } 
               />
               <Route path="instagram/callback" element={<InstagramCallback />} />
+              <Route 
+                path="instagram/stats" 
+                element={
+                  <ProtectedRoute>
+                    <InstagramStats />
+                  </ProtectedRoute>
+                } 
+              />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

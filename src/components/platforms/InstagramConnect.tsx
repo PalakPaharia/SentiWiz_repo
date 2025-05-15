@@ -70,6 +70,9 @@ export default function InstagramConnect() {
         ) : (
           <Button onClick={handleConnect}>Connect Instagram</Button>
         )}
+        <Button variant="outline" onClick={() => navigate('/instagram/stats')}>
+          View Instagram Stats
+        </Button>
       </CardContent>
     </Card>
   );
